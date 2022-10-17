@@ -4,13 +4,16 @@ Python implementation of bloom filter to analyze the false positive rates for di
 - Assumtions made.
 Input.txt file contains the following:
 Line 1 : Bloom Filter Size
-Line 2 : Number of Hash Functions
-Line 3 : List of words for testing membership.
+Line 2 : List of words for testing membership.
 
 - Instruction to Run the code. 
 Clone the git repository
+Install the following dependency before running the program.
+1. $pip install mmh3
+2. $pip install bitarray
+3. $pip install matplotlib
+
 Run the command $ python bf.py input.txt
-(Install latest version of pip and lib ex: mmh3 installation using $ pip install mmh3)
 
 
 - Project Members
