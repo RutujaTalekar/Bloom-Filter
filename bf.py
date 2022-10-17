@@ -5,6 +5,7 @@ Created on Sun Oct  9 20:21:27 2022
 @author: ritu1
 """
 
+from cProfile import label
 import math
 import mmh3
 from bitarray import bitarray
@@ -66,30 +67,55 @@ def readDataSet():
 def readCommands(filename):
     fin = open(filename, "r")
     bfSize = int(fin.readline())
-    numHashes = int(fin.readline())
+    #numHashes = int(fin.readline())
     wordList = fin.readline()
     testData = wordList.split(",")
     fin.close()
-    return bfSize,numHashes,testData
+    return bfSize,testData
     
-def plotGraph(num_of_words, fp_rate):
-    plt.plot(num_of_words,fp_rate)
-    plt.xlabel('Number of words')
-    plt.ylabel('False positive rate')
+def plotGraph(num_of_words, dict):
+    
+    # plt.plot(num_of_words,fp_rate)
+    # plt.xlabel('Number of words')
+    # plt.ylabel('False positive rate')
+    
+    fig,ax = plt.subplots()
+    # for k,v in dict.items():
+    #     ax.plot(num_of_words, v, label= k)
+    
+    ax.plot(num_of_words, dict[2], color = 'green', label="H2")
+    ax.plot(num_of_words, dict[4], color = 'red', label="H4")
+    ax.plot(num_of_words, dict[8], color = 'blue', label="H8")
+    ax.plot(num_of_words, dict[16], color = 'purple', label="H16")
+    
     plt.show()
     return True
 
 
 dataset = readDataSet()
-bf_size,hash_count,test_data = readCommands(sys.argv[1])
-n = len(dataset) #no of items to add
+#m = bloom size, k = number of hash functions used, n = total number of words
+m,test_data = readCommands(sys.argv[1])
+n = [100, 250, 500, 750, 1000, 2500, 5000, 7500, 10000, 25000]
+k = [2,4,8,16]
+dict = {2:[],4:[], 8:[], 16:[]}
+#Storing values for graph
+fp_rates = []
 
-# Take command line argument 
-#filename = sys.argv[1]
 
+#1 k=2, m=16 n= 100,...........
+# for i in range(len(k)):
+#     for j in range(len(n)):
+#         bf = BloomFilter(n[j], k[i], m)
+#         fp_rates[j]= bf.getFpProb()
 
-bloomf = BloomFilter(n, hash_count, bf_size)
+for i in range(len(n)):
+    for key,value in dict.items():
+        bf= BloomFilter(n[i], key, m)
+        dict[key].append(bf.getFpProb())  
 
+print(dict)
+
+'''
 print("Total number of elements added in bloom filter:{}".format(n))
 print("Size of bit array:{}".format(bloomf.size))
 print("Number of hash functions:{}".format(bloomf.total_hashs))
@@ -97,26 +123,30 @@ print("False positive Probability:{}".format(bloomf.fp_prob))
 #print("Test the following words:", test_data)
 #print("Bloom filter before adding words........")
 #print(bloomf.bit_array)
+'''
 
+'''
+#Using the best fp rate configurations for membership check
+bfTest = BloomFilter(n[-1], k[-1], m)
 for item in dataset:
-	bloomf.add(item)
-#print("Bloom filter after adding words........")
-#print(bloomf.bit_array)
-    
+	bfTest.add(item)
+'''
+#Membership test
 
-for item in test_data:
-    if bloomf.membershipCheck(item):
-        print("Item probably exists in bloom filter")
-    else:
-        print("Item definitely doesnt exists in bloom filter")
+# for item in test_data:
+#     if bfTest.membershipCheck(item):
+#         print("Item probably exists in bloom filter")
+#     else:
+#         print("Item definitely doesnt exists in bloom filter")
 
 
-num_of_words, fp_rate = [100,250,500,750,1000,2500,5000],[0.183,0.283,0.483,0.488,0.766,3.4,4.90]
 
-plotGraph(num_of_words, fp_rate)
+#Plot graph
+plotGraph(n, dict)
 
-#print("Bloom filter after resetting........")
-print(bloomf.reset())
+
+#Test rest function
+#print(bfTest.reset())
 
 
 
