@@ -3,13 +3,13 @@ Python implementation of bloom filter to analyze the false positive rates for di
 
 - Instruction to Run the code:  
   1. Clone the git repository  
-  2. Install the following dependency before running the program.
-    1. $pip install mmh3
-    2. $pip install bitarray
-    3. $pip install matplotlib  
-
-  3. Run the command $ python bf.py input.txt  
-
+  2. Install the following dependency before running the program.  
+   ``` 
+     $pip install mmh3  
+     $pip install bitarray  
+     $pip install matplotlib  
+    ```
+  3. Run the command ```$ python bf.py input.txt```
 - Assumtions made.   
   The output graph uses following values to plot FP_Rate:   
   k (no. of hash functions) = 2,4,8,16  
